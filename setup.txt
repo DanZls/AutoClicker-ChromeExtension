@@ -1,0 +1,1 @@
+Add email and password to content.moneystorage-login-2.js

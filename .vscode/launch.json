@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Chrome Extension",
+      "type": "chrome",
+      "request": "launch",
+      "url": "chrome://extensions/",
+      "webRoot": "${workspaceFolder}",
+      "userDataDir": "${workspaceFolder}/.chrome-debug",
+      "runtimeArgs": [
+        "--load-extension=${workspaceFolder}",
+        "--disable-extensions-except=${workspaceFolder}",
+        "--user-data-dir=${workspaceFolder}/.chrome-debug"
+      ]
+    }
+  ]
+}

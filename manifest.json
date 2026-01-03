@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "CashFlow Clicker",
+  "version": "1.0",
+  "description": "Clicks on CashFlow websites",
+  "permissions": ["activeTab", "scripting", "storage", "alarms"],
+  "host_permissions": [
+    "https://*.cashflow.fund/*",
+    "https://storage.money/*",
+    "https://e-id.cards/login"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    { "matches": ["https://*.cashflow.fund/*"], "js": ["utils.js", "content.cashflow.js"] },
+    { "matches": ["https://storage.money/account"], "js": ["utils.js", "content.moneystorage-account.js"] },
+    { "matches": ["https://storage.money/merchant_request*"], "js": ["utils.js", "content.moneystorage-confirm-1.js"] },
+    { "matches": ["https://storage.money/merchant_status*"], "js": ["utils.js", "content.moneystorage-confirm-2.js"] },
+    { "matches": ["https://storage.money/login"], "js": ["utils.js", "content.moneystorage-login-1.js"] },
+    { "matches": ["https://e-id.cards/login"], "js": ["utils.js", "content.moneystorage-login-2.js"] }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "CashFlow Clicker"
+  }
+}
