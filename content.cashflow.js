@@ -42,9 +42,9 @@ async function FastFlowSequence() {
   await StartPullEcurrency();
   await CompleteWithdrawalToMoneystorage();
   await AccrueToDripped();
-  await StartPullEcurrency();
   await TransferDrippedToMoneybox();
   await TransferMoneyboxToMoneystorage();
+  await StartPullEcurrency();
   LogWithDatetime("FastFlowSequence success");
 }
 
