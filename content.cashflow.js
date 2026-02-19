@@ -1,33 +1,33 @@
 // requires prior injection of utils.js
 
-WaitForElement('tr[class*="contribs"][data-type="mining"]')
-  .then(async () => {
-    await ClickAndWait('button[class*="btn_close"][value="Ok"]');
-    await FastFlowSequence();
-  });
+// WaitForElement('tr[class*="contribs"][data-type="mining"]')
+//   .then(async () => {
+//     await ClickAndWait('button[class*="btn_close"][value="Ok"]');
+//     await FastFlowSequence();
+//   });
 
 
-chrome.runtime.onMessage.addListener(
-  (message, sender, sendResponse) => {
-    try {
-      if (message.action === 'ClickSequence') {
-        FastFlowSequence().then(() => {
-          sendResponse({ success: true });
-        });
-      }
-      else if (message.action === 'OpenFlowsPage') {
-        OpenFlowsPage().then(() => {
-          sendResponse({ success: true });
-        });
-      }
-    }
-    catch (error){
-      console.log(error);
-      sendResponse({ success: false });
-    }
-    return true;
-  }
-);
+// chrome.runtime.onMessage.addListener(
+//   (message, sender, sendResponse) => {
+//     try {
+//       if (message.action === 'ClickSequence') {
+//         FastFlowSequence().then(() => {
+//           sendResponse({ success: true });
+//         });
+//       }
+//       else if (message.action === 'OpenFlowsPage') {
+//         OpenFlowsPage().then(() => {
+//           sendResponse({ success: true });
+//         });
+//       }
+//     }
+//     catch (error){
+//       console.log(error);
+//       sendResponse({ success: false });
+//     }
+//     return true;
+//   }
+// );
 
 
 async function OpenFlowsPage() {
