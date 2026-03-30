@@ -1,16 +1,37 @@
+const cashFlowDomains = [
+  "https://eur.cashflow.fund",
+  "https://es.cashflow.fund",
+  "https://gb.cashflow.fund",
+  "https://pl.cashflow.fund",
+  "https://kg.cashflow.fund",
+];
+
 
 chrome.runtime.onStartup.addListener(() => {
+  resizeWindows();
   setAlarms();
 });
 
 
 chrome.runtime.onInstalled.addListener(() => {
+  resizeWindows();
   setAlarms();
 });
 
 
 function setAlarms() {
   chrome.alarms.create('clickAlarm1', {delayInMinutes: 1, periodInMinutes: 37});
+}
+
+
+function resizeWindows() {
+  chrome.windows.getAll({}, (windows) => {
+    windows.forEach((win) => {
+      chrome.windows.update(win.id, { state: 'normal' }, () => {
+        chrome.windows.update(win.id, { width: 1280, height: 720 });
+      });
+    });
+  });
 }
 
 
@@ -91,15 +112,8 @@ async function openFlowsPageOnTab(tab) {
 
 
 async function getCashFlowTabs(page) {
-  const domains = [
-    "https://eur.cashflow.fund",
-    "https://es.cashflow.fund",
-    "https://gb.cashflow.fund",
-    "https://pl.cashflow.fund",
-    "https://kg.cashflow.fund",
-  ];
   let tabs = [];
-  for (const domain of domains) {
+  for (const domain of cashFlowDomains) {
     const domainTabs = await chrome.tabs.query({ url: [`${domain}/${page}`] });
     const domainTab = (domainTabs.length > 0) ? domainTabs[0] : await chrome.tabs.create({ url: domain });
     tabs.push(domainTab);

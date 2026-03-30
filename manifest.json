@@ -3,7 +3,14 @@
   "name": "CashFlow Clicker",
   "version": "1.0",
   "description": "Clicks on CashFlow websites",
-  "permissions": ["activeTab", "scripting", "storage", "alarms"],
+  "permissions": [
+    "windows",
+    "tabs",
+    "activeTab", 
+    "scripting", 
+    "storage", 
+    "alarms"
+  ],
   "host_permissions": [
     "https://*.cashflow.fund/*",
     "https://storage.money/*",
@@ -14,7 +21,7 @@
     "type": "module"
   },
   "content_scripts": [
-    { "matches": ["https://*.cashflow.fund/*"], "js": ["utils.js", "content.cashflow.js"] },
+    { "matches": ["https://*.cashflow.fund/*"], "js": ["utils.js", "newbie-flow.js", "content.cashflow.js"] },
     { "matches": ["https://storage.money/account"], "js": ["utils.js", "content.moneystorage-account.js"] },
     { "matches": ["https://storage.money/merchant_request*"], "js": ["utils.js", "content.moneystorage-confirm-1.js"] },
     { "matches": ["https://storage.money/merchant_status*"], "js": ["utils.js", "content.moneystorage-confirm-2.js"] },

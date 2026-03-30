@@ -1,7 +1,11 @@
 
-async function WaitForElement(selector, parentNode = window.document) {
+async function WaitForElement(selector, parentNode = window.document, timeoutSec = 10) {
   const startTime = Date.now();
   while (!Select(selector, parentNode)){
+    if ((Date.now() - startTime) / 1000 >= timeoutSec) {
+      LogWithDatetime(`WaitForElement ${selector}: timeout ${timeoutSec} sec`);
+      return;
+    }
     await Wait(0.1);
   }
 }
@@ -34,6 +38,14 @@ async function NavigateToPageAndWait(pageUrl, delayInSeconds = 5) {
   if (window.location.pathname !== pageUrl) {
     window.location.href = pageUrl;
     await Wait(delayInSeconds);
+    LogWithDatetime("Navigated to page " + pageUrl);
+  }
+}
+
+
+function NavigateToPage(pageUrl) {
+  if (window.location.pathname !== pageUrl) {
+    window.location.href = pageUrl;
     LogWithDatetime("Navigated to page " + pageUrl);
   }
 }

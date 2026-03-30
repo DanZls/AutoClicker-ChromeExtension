@@ -1,50 +1,62 @@
-// requires prior injection of utils.js
+// requires prior injection of utils.js, newbie-flow.js
 
-WaitForElement('tr[class*="contribs"][data-type="mining"]')
+WaitForElement('li[class*="cabinet__tabs-tab"]')
   .then(async () => {
-    await ClickAndWait('button[class*="btn_close"][value="Ok"]');
-    await FastFlowSequence();
+    if (window.location.pathname !== '/cabinet')
+      return;
+    if (Select('button[class*="btn_close"][value="Ok"]'))
+      await ClickAndWait('button[class*="btn_close"][value="Ok"]');
+    // await FastFlowSequence();
+    await NewbieFlowSequence();
   });
 
 
-chrome.runtime.onMessage.addListener(
-  (message, sender, sendResponse) => {
-    try {
-      if (message.action === 'ClickSequence') {
-        FastFlowSequence().then(() => {
-          sendResponse({ success: true });
-        });
-      }
-      else if (message.action === 'OpenFlowsPage') {
-        OpenFlowsPage().then(() => {
-          sendResponse({ success: true });
-        });
-      }
-    }
-    catch (error){
-      console.log(error);
-      sendResponse({ success: false });
-    }
-    return true;
+// chrome.runtime.onMessage.addListener(
+//   (message, sender, sendResponse) => {
+//     try {
+//       if (message.action === 'ClickSequence') {
+//         FastFlowSequence().then(() => {
+//           sendResponse({ success: true });
+//         });
+//       }
+//     }
+//     catch (error){
+//       console.log(error);
+//       sendResponse({ success: false });
+//     }
+//     return true;
+//   }
+// );
+
+async function NewbieFlowSequence() {
+  // if (window.location.host !== 'eur.cashflow.fund')
+  //   return;
+  await NewbieFlow.NavigateToFlowCabinet();
+  await NewbieFlow.AccrueToMoneybox();
+  const moneyboxAmount = await NewbieFlow.GetMoneyboxAmount();
+  const flowAmount = await NewbieFlow.GetFlowAmount();
+  const maxFlowAmount = await NewbieFlow.GetMaxFlowAmount();
+  const maxTopUpAmount = ((maxFlowAmount - flowAmount) / 1.5).toFixed(2) - 0.01;
+  console.log(maxTopUpAmount);
+  const topUpAmount = Math.min(moneyboxAmount, maxTopUpAmount);
+  console.log(topUpAmount);
+  if (topUpAmount >= 20) {
+    await NewbieFlow.TopUpFromNewbieMoneybox(moneyboxAmount);
   }
-);
-
-
-async function OpenFlowsPage() {
-  await NavigateToPageAndWait("/calc");
-  LogWithDatetime("OpenFlowsPage success");
+  LogWithDatetime("NewbieFlowSequence success");
 }
 
 
 async function FastFlowSequence() {
   await NavigateToPageAndWait("/cabinet");
   await SelectFlowTab("FastFlow");
-  await StartPullEcurrency();
+  await Wait(1);
+  // await StartPullEcurrency();
   await CompleteWithdrawalToMoneystorage();
   await AccrueToDripped();
   await TransferDrippedToMoneybox();
-  await TransferMoneyboxToMoneystorage();
-  await StartPullEcurrency();
+  // await TransferMoneyboxToMoneystorage();
+  // await StartPullEcurrency();
   LogWithDatetime("FastFlowSequence success");
 }
 
@@ -67,6 +79,7 @@ async function SelectFlowTab(flowTab) {
 
 
 async function AccrueToDripped() {
+  await WaitForElement('button[class*="getmydaysbonus"][rel="0"]');
   if (Select('button[class*="getmydaysbonus"][rel="0"]')?.innerText?.includes('Accrue reward')) {
     await ClickAndWait('button[class*="getmydaysbonus"][rel="0"]');
     await ClickAndWait('button[class*="btn_close"][value="Ok"]');
@@ -82,7 +95,8 @@ async function AccrueToDripped() {
 async function TransferDrippedToMoneybox() {
   if (Select('button[id="dripp_all"]:not([class*="disabled"])')) {
     await ClickAndWait('button[id="dripp_all"]');
-    await ClickAndWait('button[class*="btn_close"][value="Ok"]'); // for possible FastFlow restarts
+    await ClickAndWait('label[class*="label-radio"][for="withdrawPremium"]');
+    await ClickAndWait('button[class*="btn_close"][value="Ok"]');
     await ClickAndWait('button[class*="btn_close"][value="Ok"]');
     LogWithDatetime("TransferDrippedToMoneybox is successful");
   }
